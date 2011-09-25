@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: set tw=0 fileencoding=utf-8:
 
-"""Yet Another Simple Broadcast Console
+"""Yet Another Broadcast Console.
 
 This is a simple GTK based console for radio broadcasting.  It uses external
 programs to actually play the audio, stream it and do other things (The UNIX
