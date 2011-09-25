@@ -40,6 +40,7 @@ class Toolbar(gtk.HBox):
         img.set_from_stock(gtk.STOCK_CONNECT, gtk.ICON_SIZE_BUTTON)
         self.ctl_connected = gtk.ToggleButton("Online")
         self.ctl_connected.set_image(img)
+        self.ctl_connected.connect("clicked", self.on_connect)
         self.ctl_connected.set_tooltip_text("Starts darkice, you go online (Ctrl+O).")
         self.ctl_connected.add_accelerator("clicked", self.main.accel_group, ord("o"), gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
         self.pack_start(self.ctl_connected, expand=False)
@@ -64,6 +65,12 @@ class Toolbar(gtk.HBox):
         self.ctl_progress = gtk.ProgressBar()
         # self.ctl_progress.set_fraction(0.13)
         self.pack_start(self.ctl_progress, expand=True)
+
+    def on_connect(self, widget):
+        if widget.get_active():
+            self.main.start_streaming()
+        else:
+            self.main.stop_streaming()
 
     def on_mute(self, widget):
         if widget.get_active():
@@ -188,6 +195,7 @@ class MainWindow:
     def __init__(self):
         self.player_jingle = None
         self.player_music = None
+        self.proc_stream = None
 
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.set_title("Simple Broadcasting Console")
@@ -305,6 +313,35 @@ class MainWindow:
             self.player_music.kill()
             self.player_music = None
             self.toolbar.set_song_title("")
+
+    def start_streaming(self):
+        if self.proc_stream:
+            print "ERROR: already streaming."
+            return
+        filename = os.path.expanduser("~/.config/yabc/commands/connect")
+        if not os.path.exists(filename):
+            print >>sys.stderr, "ERROR: no such file: %s" % filename
+            return
+        if not os.access(filename, os.X_OK):
+            print >>sys.stderr, "ERROR: not executable: %s" % filename
+            return
+        self.proc_stream = subprocess.Popen([filename], stdout=subprocess.PIPE)
+
+    def stop_streaming(self):
+        """Stops the streamer and executes the disconnect handler."""
+        if self.proc_stream:
+            print "Disconnecting."
+            self.proc_stream.kill()
+            self.proc_stream = None
+
+        filename = os.path.expanduser("~/.config/yabc/commands/disconnect")
+        if not os.path.exists(filename):
+            print >>sys.stderr, "NOTICE: no such file: %s" % filename
+            return
+        if not os.access(filename, os.X_OK):
+            print >>sys.stderr, "NOTICE: not executable: %s" % filename
+            return
+        subprocess.Popen([filename], stdout=subprocess.PIPE)
 
     def on_quit(self, widget, event, data=None):
         """Ends the main GTK event loop."""
