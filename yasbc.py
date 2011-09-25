@@ -59,17 +59,25 @@ class JinglePane(gtk.VBox):
         self.row1.pack_start(self.btn3, expand=False)
 
     
-class NotesView(gtk.TextView):
-    def __init__(self, scroll_window=None, **kwargs):
-        gtk.TextView.__init__(self)
-        self.modify_font(pango.FontDescription("monospace"))
+class NotesView(gtk.ScrolledWindow):
+    def __init__(self):
+        gtk.ScrolledWindow.__init__(self)
+        self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+
+        self.text_view = self.setup_view()
+        self.add_with_viewport(self.text_view)
+
+    def setup_view(self):
+        view = gtk.TextView()
+        view.modify_font(pango.FontDescription("monospace"))
 
         filename = os.path.expanduser("~/.config/yasbc/notes.txt")
         if os.path.exists(filename):
             text = file(filename, "rb").read().decode("utf-8")
         else:
             text = u"The %s file is empty." % filename
-        self.get_buffer().set_text(text)
+        view.get_buffer().set_text(text)
+        return view
 
 
 class MainView(gtk.HPaned):
