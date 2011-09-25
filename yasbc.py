@@ -114,9 +114,7 @@ class MainWindow:
             tmp = files[:3]
             hbox = gtk.HBox(False, spacing=0)
             for text in tmp:
-                ctl = gtk.Button(os.path.splitext(os.path.basename(text))[0])
-                ctl.connect("clicked", self.on_jingle)
-                hbox.pack_start(ctl, expand=True, fill=True)
+                hbox.pack_start(self.get_audio_button(text), expand=True, fill=True)
             del files[:3]
             jingles.pack_start(hbox, expand=False, fill=True)
 
@@ -126,12 +124,15 @@ class MainWindow:
         """Sets up the music playlist."""
         files = gtk.VBox(False, spacing=0)
         for filename in self.get_audio_files("~/.config/yasbc/music"):
-            ctl = gtk.Button(os.path.splitext(os.path.basename(filename))[0])
-            ctl.set_tooltip_text(filename)
-            ctl.connect("clicked", self.on_jingle)
-            files.pack_start(ctl, expand=False, fill=True)
+            files.pack_start(self.get_audio_button(filename), expand=False, fill=True)
         return files
 
+    def get_audio_button(self, filename):
+        ctl = gtk.Button(os.path.splitext(os.path.basename(filename))[0])
+        ctl.set_tooltip_text(filename)
+        ctl.set_can_focus(False)
+        ctl.connect("clicked", self.on_jingle)
+        return ctl
 
     def get_audio_files(self, folder):
         """Returns names of audio files in the specified folder."""
