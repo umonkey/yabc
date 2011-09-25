@@ -41,8 +41,7 @@ class Toolbar(gtk.HBox):
         self.pack_start(self.ctl_stop, expand=False)
 
         self.ctl_progress = gtk.ProgressBar()
-        self.ctl_progress.set_fraction(0.13)
-        self.ctl_progress.set_text(u"Огоньки, 0:13 / 4:47")
+        # self.ctl_progress.set_fraction(0.13)
         self.pack_start(self.ctl_progress, expand=True)
 
     def on_mute(self, widget):
@@ -65,6 +64,9 @@ class Toolbar(gtk.HBox):
 
     def on_stop(self, widget):
         self.main.stop_player()
+
+    def set_song_title(self, title):
+        self.ctl_progress.set_text(title)
 
 
 class NotesView(gtk.ScrolledWindow):
@@ -145,7 +147,8 @@ class MainWindow:
         return self.menu_bar
 
     def setup_toolbar(self):
-        return Toolbar(self)
+        self.toolbar = Toolbar(self)
+        return self.toolbar
 
     def setup_main_view(self):
         self.main_hbox = gtk.HBox(False, 2)
@@ -224,6 +227,8 @@ class MainWindow:
 
         filename = widget.get_tooltip_text()
         print "Playing %s %s" % (mode, filename)
+
+        self.toolbar.set_song_title(os.path.basename(filename))
 
         child = subprocess.Popen(["mplayer", filename], stdout=subprocess.PIPE)
         setattr(self, prop, child)
