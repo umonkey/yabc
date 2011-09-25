@@ -163,6 +163,14 @@ class MainMenu(gtk.MenuBar):
             item.add_accelerator("activate", self.main.accel_group, ord(str(idx + 1)), gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
             submenu.append(item)
 
+        for idx in range(9):
+            if idx >= len(self.main.music_buttons):
+                break
+            item = gtk.MenuItem("Play song %u" % (idx + 1))
+            item.connect("activate", self.on_song)
+            item.add_accelerator("activate", self.main.accel_group, ord(str(idx + 1)), gtk.gdk.CONTROL_MASK|gtk.gdk.MOD1_MASK, gtk.ACCEL_VISIBLE)
+            submenu.append(item)
+
         return submenu
 
     def on_jingle(self, widget):
@@ -173,6 +181,15 @@ class MainMenu(gtk.MenuBar):
             print "No jingle for this item: %u." % idx
             return False
         self.main.jingle_buttons[idx].clicked()
+
+    def on_song(self, widget):
+        """Plays a song."""
+        # TODO: pass the id somehow.
+        idx = int(widget.get_label().split(" ")[-1]) - 1
+        if idx >= len(self.main.music_buttons):
+            print "No song for this item: %u." % idx
+            return False
+        self.main.music_buttons[idx].clicked()
 
 
 class PlayerButton(gtk.Button):
@@ -269,8 +286,11 @@ class MainWindow:
     def setup_music(self):
         """Sets up the music playlist."""
         files = gtk.VBox(False, spacing=0)
+        self.music_buttons = []
         for filename in self.get_audio_files("~/.config/yabc/music"):
-            files.pack_start(PlayerButton(filename, self.on_music, image=gtk.STOCK_MEDIA_PLAY), expand=False, fill=True)
+            ctl = PlayerButton(filename, self.on_music, image=gtk.STOCK_MEDIA_PLAY)
+            files.pack_start(ctl, expand=False, fill=True)
+            self.music_buttons.append(ctl)
         return files
 
     def get_audio_files(self, folder):
