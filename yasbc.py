@@ -18,6 +18,8 @@ class Toolbar(gtk.HBox):
         gtk.HBox.__init__(self)
         self.main = parent
 
+        # Stock images: http://www.pygtk.org/pygtk2tutorial/ch-ButtonWidget.html
+
         self.btn_connected = gtk.ToggleButton("Online")
         self.btn_connected.set_tooltip_text("Starts darkice, you go online.")
         self.pack_start(self.btn_connected, expand=False)
@@ -31,7 +33,7 @@ class Toolbar(gtk.HBox):
         self.btn_mute.set_tooltip_text("Disables sending your voice to the server.")
         self.pack_start(self.btn_mute, expand=False)
 
-        self.ctl_stop = gtk.Button("Stop")
+        self.ctl_stop = gtk.Button("Stop", stock=gtk.STOCK_STOP)
         self.ctl_stop.set_tooltip_text("Stops the audio file you're playing.")
         self.pack_start(self.ctl_stop, expand=False)
 
@@ -89,6 +91,15 @@ class MainMenu(gtk.MenuBar):
         menu = gtk.MenuItem("Root Menu")
         menu.set_submenu(submenu)
         self.append(menu)
+
+
+class PlayerButton(gtk.Button):
+    """A button which, when clicked, plays an audio file."""
+    def __init__(self, filename, callback):
+        gtk.Button.__init__(self, os.path.splitext(os.path.basename(filename))[0].replace("_", "__"))
+        self.set_tooltip_text(filename)
+        self.set_can_focus(False)
+        self.connect("clicked", callback)
 
 
 class MainWindow:
@@ -150,7 +161,7 @@ class MainWindow:
             tmp = files[:3]
             hbox = gtk.HBox(False, spacing=0)
             for text in tmp:
-                hbox.pack_start(self.get_audio_button(text, self.on_jingle), expand=True, fill=True)
+                hbox.pack_start(PlayerButton(text, self.on_jingle), expand=True, fill=True)
             del files[:3]
             jingles.pack_start(hbox, expand=False, fill=True)
 
@@ -160,15 +171,8 @@ class MainWindow:
         """Sets up the music playlist."""
         files = gtk.VBox(False, spacing=0)
         for filename in self.get_audio_files("~/.config/yasbc/music"):
-            files.pack_start(self.get_audio_button(filename, self.on_music), expand=False, fill=True)
+            files.pack_start(PlayerButton(filename, self.on_music), expand=False, fill=True)
         return files
-
-    def get_audio_button(self, filename, handler):
-        ctl = gtk.Button(os.path.splitext(os.path.basename(filename))[0].replace("_", "__"))
-        ctl.set_tooltip_text(filename)
-        ctl.set_can_focus(False)
-        ctl.connect("clicked", handler)
-        return ctl
 
     def get_audio_files(self, folder):
         """Returns names of audio files in the specified folder."""
