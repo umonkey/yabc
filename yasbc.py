@@ -4,6 +4,7 @@
 import glob
 import os
 import subprocess
+import sys
 
 import gobject
 import gtk
@@ -20,18 +21,19 @@ class Toolbar(gtk.HBox):
 
         # Stock images: http://www.pygtk.org/pygtk2tutorial/ch-ButtonWidget.html
 
-        self.btn_connected = gtk.ToggleButton("Online")
-        self.btn_connected.set_tooltip_text("Starts darkice, you go online.")
-        self.pack_start(self.btn_connected, expand=False)
+        self.ctl_connected = gtk.ToggleButton("Online")
+        self.ctl_connected.set_tooltip_text("Starts darkice, you go online.")
+        self.pack_start(self.ctl_connected, expand=False)
 
         self.ctl_duration = gtk.Label("00:13")
         self.ctl_duration.set_padding(5, 0)
         self.ctl_duration.set_tooltip_text("You're online for this long.")
         self.pack_start(self.ctl_duration, expand=False)
 
-        self.btn_mute = gtk.ToggleButton("Mute")
-        self.btn_mute.set_tooltip_text("Disables sending your voice to the server.")
-        self.pack_start(self.btn_mute, expand=False)
+        self.ctl_mute = gtk.ToggleButton("Mute")
+        self.ctl_mute.set_tooltip_text("Disables sending your voice to the server.")
+        self.ctl_mute.connect("clicked", self.on_mute)
+        self.pack_start(self.ctl_mute, expand=False)
 
         self.ctl_stop = gtk.Button("Stop", stock=gtk.STOCK_STOP)
         self.ctl_stop.set_tooltip_text("Stops the audio file you're playing.")
@@ -41,6 +43,24 @@ class Toolbar(gtk.HBox):
         self.ctl_progress.set_fraction(0.13)
         self.ctl_progress.set_text(u"Огоньки, 0:13 / 4:47")
         self.pack_start(self.ctl_progress, expand=True)
+
+    def on_mute(self, widget):
+        if widget.get_active():
+            filename = "~/.config/yasbc/commands/mute"
+        else:
+            filename = "~/.config/yasbc/commands/unmute"
+
+        filename = os.path.expanduser(filename)
+        if not os.path.exists(filename):
+            print >>sys.stderr, "ERROR: file %s not found." % filename
+            return False
+
+        if not os.access(filename, os.X_OK):
+            print >>sys.stderr, "ERROR: file %s is not executable." % filename
+            return False
+
+        print "Executing %s" % filename
+        subprocess.Popen([filename], stdout=subprocess.PIPE)
 
 
 class NotesView(gtk.ScrolledWindow):
