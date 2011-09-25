@@ -120,6 +120,7 @@ class MainMenu(gtk.MenuBar):
 
         item = gtk.MenuItem("Exit")
         item.connect("activate", lambda x: self.main.on_quit(None, None))
+        item.add_accelerator("activate", self.main.accel_group, ord("q"), gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
         submenu.append(item)
 
         return submenu
