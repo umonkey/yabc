@@ -67,9 +67,9 @@ class Toolbar(gtk.HBox):
 
     def on_mute(self, widget):
         if widget.get_active():
-            filename = "~/.config/yasbc/commands/mute"
+            filename = "~/.config/yabc/commands/mute"
         else:
-            filename = "~/.config/yasbc/commands/unmute"
+            filename = "~/.config/yabc/commands/unmute"
 
         filename = os.path.expanduser(filename)
         if not os.path.exists(filename):
@@ -119,7 +119,7 @@ class NotesView(gtk.ScrolledWindow):
         print "Wrote %s" % filename
 
     def get_filename(self):
-        return os.path.expanduser("~/.config/yasbc/notes.txt")
+        return os.path.expanduser("~/.config/yabc/notes.txt")
 
 
 class MainMenu(gtk.MenuBar):
@@ -245,7 +245,7 @@ class MainWindow:
         jingles = gtk.VBox(False, spacing=0)
         self.jingle_buttons = []
 
-        files = self.get_audio_files("~/.config/yasbc/jingles")
+        files = self.get_audio_files("~/.config/yabc/jingles")
         while files:
             tmp = files[:3]
             hbox = gtk.HBox(False, spacing=0)
@@ -261,7 +261,7 @@ class MainWindow:
     def setup_music(self):
         """Sets up the music playlist."""
         files = gtk.VBox(False, spacing=0)
-        for filename in self.get_audio_files("~/.config/yasbc/music"):
+        for filename in self.get_audio_files("~/.config/yabc/music"):
             files.pack_start(PlayerButton(filename, self.on_music, image=gtk.STOCK_MEDIA_PLAY), expand=False, fill=True)
         return files
 
