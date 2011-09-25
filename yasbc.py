@@ -55,13 +55,23 @@ class NotesView(gtk.ScrolledWindow):
         view = gtk.TextView()
         view.modify_font(pango.FontDescription("monospace"))
 
-        filename = os.path.expanduser("~/.config/yasbc/notes.txt")
+        filename = self.get_filename()
         if os.path.exists(filename):
             text = file(filename, "rb").read().decode("utf-8")
         else:
             text = u"The %s file is empty." % filename
         view.get_buffer().set_text(text)
         return view
+
+    def save(self):
+        buf = self.text_view.get_buffer()
+        text = buf.get_text(buf.get_start_iter(), buf.get_end_iter())
+        filename = self.get_filename()
+        file(filename, "wb").write(text.encode("utf-8"))
+        print "Wrote %s" % filename
+
+    def get_filename(self):
+        return os.path.expanduser("~/.config/yasbc/notes.txt")
 
 
 class MainMenu(gtk.MenuBar):
@@ -200,6 +210,7 @@ class MainWindow:
         """Ends the main GTK event loop."""
         if self.player_music:
             self.player_music.kill()
+        self.notes.save()
         gtk.main_quit()
         return False
 
