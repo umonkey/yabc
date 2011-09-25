@@ -43,22 +43,6 @@ class Toolbar(gtk.HBox):
         self.pack_start(self.ctl_progress, expand=True)
 
 
-class JinglePane(gtk.VBox):
-    def __init__(self):
-        gtk.VBox.__init__(self, False, 2)
-
-        self.row1 = gtk.HBox(False, 3)
-
-        self.btn1 = gtk.Button("1")
-        self.row1.pack_start(self.btn1, expand=False)
-
-        self.btn2 = gtk.Button("2")
-        self.row1.pack_start(self.btn2, expand=False)
-
-        self.btn3 = gtk.Button("3")
-        self.row1.pack_start(self.btn3, expand=False)
-
-    
 class NotesView(gtk.ScrolledWindow):
     def __init__(self):
         gtk.ScrolledWindow.__init__(self)
@@ -78,20 +62,6 @@ class NotesView(gtk.ScrolledWindow):
             text = u"The %s file is empty." % filename
         view.get_buffer().set_text(text)
         return view
-
-
-class MainView(gtk.HPaned):
-    def __init__(self):
-        gtk.HPaned.__init__(self)
-
-        self.text_scroll = gtk.ScrolledWindow()
-        self.text_scroll.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.notes_pane = NotesView(scrolled_window=self.text_scroll)
-        self.text_scroll.add(self.notes_pane)
-        self.add1(self.text_scroll)
-
-        self.jingle_pane = JinglePane()
-        self.add2(self.jingle_pane)
 
 
 class MainMenu(gtk.MenuBar):
