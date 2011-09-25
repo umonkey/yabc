@@ -96,6 +96,9 @@ class MainWindow:
         self.jingles = self.setup_jingles()
         buttons.pack_start(self.jingles, expand=False, fill=True)
 
+        self.music = self.setup_music()
+        buttons.pack_start(self.music, expand=True, fill=True)
+
         return buttons
 
     def setup_jingles(self):
@@ -119,6 +122,17 @@ class MainWindow:
 
         return jingles
 
+    def setup_music(self):
+        """Sets up the music playlist."""
+        files = gtk.VBox(False, spacing=0)
+        for filename in self.get_audio_files("~/.config/yasbc/music"):
+            ctl = gtk.Button(os.path.splitext(os.path.basename(filename))[0])
+            ctl.set_tooltip_text(filename)
+            ctl.connect("clicked", self.on_jingle)
+            files.pack_start(ctl, expand=False, fill=True)
+        return files
+
+
     def get_audio_files(self, folder):
         """Returns names of audio files in the specified folder."""
         folder = os.path.expanduser(folder)
@@ -137,7 +151,11 @@ class MainWindow:
         The name of the file is in the tooltip.  It must be the base name, the
         folder where the jingles are located is specified in the config
         file."""
-        print "on_jingle: %s" % widget
+        print "on_jingle: %s" % widget.get_tooltip_text()
+
+    def play_file(self, filename):
+        """Starts playing a file."""
+        print "Playing: %s" % filename
 
     def on_quit(self, widget, event, data=None):
         """Ends the main GTK event loop."""
