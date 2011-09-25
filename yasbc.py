@@ -62,6 +62,7 @@ class JinglePane(gtk.VBox):
 class NotesView(gtk.TextView):
     def __init__(self, scroll_window=None, **kwargs):
         gtk.TextView.__init__(self)
+        self.modify_font(pango.FontDescription("monospace"))
 
         filename = os.path.expanduser("~/.config/yasbc/notes.txt")
         if os.path.exists(filename):
