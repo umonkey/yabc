@@ -63,6 +63,13 @@ class NotesView(gtk.TextView):
     def __init__(self, scroll_window=None, **kwargs):
         gtk.TextView.__init__(self)
 
+        filename = os.path.expanduser("~/.config/yasbc/notes.txt")
+        if os.path.exists(filename):
+            text = file(filename, "rb").read().decode("utf-8")
+        else:
+            text = u"The %s file is empty." % filename
+        self.get_buffer().set_text(text)
+
 
 class MainView(gtk.HPaned):
     def __init__(self):
