@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# encoding=utf-8
+# vim: set tw=0 fileencoding=utf-8:
 
 import glob
 import os
@@ -102,24 +102,55 @@ class NotesView(gtk.ScrolledWindow):
 
 
 class MainMenu(gtk.MenuBar):
-    def __init__(self, on_exit=None):
+    def __init__(self, parent):
+        self.main = parent
         gtk.MenuBar.__init__(self)
 
+        menu = gtk.MenuItem("Program")
+        menu.set_submenu(self.get_program_menu())
+        self.append(menu)
+
+        menu = gtk.MenuItem("Sound")
+        menu.set_submenu(self.get_sound_menu())
+        self.append(menu)
+
+    def get_program_menu(self):
         submenu = gtk.Menu()
 
         item = gtk.MenuItem("Exit")
-        item.connect("activate", on_exit)
+        item.connect("activate", lambda x: self.main.on_quit(None, None))
         submenu.append(item)
 
-        menu = gtk.MenuItem("Root Menu")
-        menu.set_submenu(submenu)
-        self.append(menu)
+        return submenu
+
+    def get_sound_menu(self):
+        submenu = gtk.Menu()
+
+        for idx in range(9):
+            if idx >= len(self.main.jingle_buttons):
+                break
+            item = gtk.MenuItem("Play jingle %u" % (idx + 1))
+            item.connect("activate", self.on_jingle)
+            item.add_accelerator("activate", self.main.accel_group, ord(str(idx + 1)), gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
+            submenu.append(item)
+
+        return submenu
+
+    def on_jingle(self, widget):
+        """Plays a jingle."""
+        # TODO: pass the id somehow.
+        idx = int(widget.get_label().split(" ")[-1]) - 1
+        if idx >= len(self.main.jingle_buttons):
+            print "No jingle for this item: %u." % idx
+            return False
+        self.main.jingle_buttons[idx].clicked()
 
 
 class PlayerButton(gtk.Button):
     """A button which, when clicked, plays an audio file."""
     def __init__(self, filename, callback):
-        gtk.Button.__init__(self, os.path.splitext(os.path.basename(filename))[0].replace("_", "__"))
+        caption = os.path.splitext(os.path.basename(filename))[0].replace("_", "__")
+        gtk.Button.__init__(self, caption)
         self.set_tooltip_text(filename)
         self.set_can_focus(False)
         self.connect("clicked", callback)
@@ -134,16 +165,21 @@ class MainWindow:
         self.window.set_title("Simple Broadcasting Console")
         self.window.connect("delete_event", self.on_quit)
 
+        self.accel_group = gtk.AccelGroup()
+        self.window.add_accel_group(self.accel_group)
+
+        main = self.setup_main_view()
+
         self.vbox = gtk.VBox(False, 2)
         self.window.add(self.vbox)
         self.vbox.pack_start(self.setup_menu(), expand=False, fill=True)
         self.vbox.pack_start(self.setup_toolbar(), expand=False, fill=True)
-        self.vbox.pack_start(self.setup_main_view(), expand=True, fill=True)
+        self.vbox.pack_start(main, expand=True, fill=True)
 
-        self.window.resize(800, 380)
+        self.window.set_default_size(800, 380)
 
     def setup_menu(self):
-        self.menu_bar = MainMenu(on_exit=lambda x: self.on_quit(None, None))
+        self.menu_bar = MainMenu(self)
         return self.menu_bar
 
     def setup_toolbar(self):
@@ -179,13 +215,16 @@ class MainWindow:
         right pane, 3 files in a row.  Each jingle is a button which, when
         clicked, calls the on_jingle method."""
         jingles = gtk.VBox(False, spacing=0)
+        self.jingle_buttons = []
 
         files = self.get_audio_files("~/.config/yasbc/jingles")
         while files:
             tmp = files[:3]
             hbox = gtk.HBox(False, spacing=0)
             for text in tmp:
-                hbox.pack_start(PlayerButton(text, self.on_jingle), expand=True, fill=True)
+                ctl = PlayerButton(text, self.on_jingle)
+                hbox.pack_start(ctl, expand=True, fill=True)
+                self.jingle_buttons.append(ctl)
             del files[:3]
             jingles.pack_start(hbox, expand=False, fill=True)
 
