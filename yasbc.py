@@ -12,6 +12,34 @@ import pygtk
 # ~/src/tmradio-client-gtk/simple.py
 
 
+class Toolbar(gtk.HBox):
+    def __init__(self, parent):
+        gtk.HBox.__init__(self)
+        self.main = parent
+
+        self.btn_connected = gtk.ToggleButton("Online")
+        self.btn_connected.set_tooltip_text("Starts darkice, you go online.")
+        self.pack_start(self.btn_connected, expand=False)
+
+        self.ctl_duration = gtk.Label("00:13")
+        self.ctl_duration.set_padding(5, 0)
+        self.ctl_duration.set_tooltip_text("You're online for this long.")
+        self.pack_start(self.ctl_duration, expand=False)
+
+        self.btn_mute = gtk.ToggleButton("Mute")
+        self.btn_mute.set_tooltip_text("Disables sending your voice to the server.")
+        self.pack_start(self.btn_mute, expand=False)
+
+        self.ctl_stop = gtk.Button("Stop")
+        self.ctl_stop.set_tooltip_text("Stops the audio file you're playing.")
+        self.pack_start(self.ctl_stop, expand=False)
+
+        self.ctl_progress = gtk.ProgressBar()
+        self.ctl_progress.set_fraction(0.13)
+        self.ctl_progress.set_text(u"Огоньки, 0:13 / 4:47")
+        self.pack_start(self.ctl_progress, expand=True)
+
+
 class JinglePane(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self, False, 2)
@@ -71,6 +99,7 @@ class MainWindow:
         self.vbox = gtk.VBox(False, 2)
         self.window.add(self.vbox)
         self.vbox.pack_start(self.setup_menu(), expand=False, fill=True)
+        self.vbox.pack_start(self.setup_toolbar(), expand=False, fill=True)
         self.vbox.pack_start(self.setup_main_view(), expand=True, fill=True)
 
         self.window.resize(800, 380)
@@ -78,6 +107,9 @@ class MainWindow:
     def setup_menu(self):
         self.menu_bar = MainMenu(on_exit=lambda x: self.on_quit(None, None))
         return self.menu_bar
+
+    def setup_toolbar(self):
+        return Toolbar(self)
 
     def setup_main_view(self):
         self.main_hbox = gtk.HBox(False, 2)
