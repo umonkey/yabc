@@ -2,12 +2,17 @@
   <head>
     <title>Yet Another Broadcast Console</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <style type="text/css">img { border: none }</style>
+    <style type="text/css">img { border: none } img.screenshot { border: solid #ccc 1px; padding: 2px }</style>
+    <link rel="alternate" type="application/wiki" title="Edit this page" href="https://github.com/umonkey/yabc/edit/gh-pages/index.html"/>
+    <link rel="shortcut icon" href="http://umonkey.net/favicon.ico"/>
+    <script type="text/javascript">var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-18002512-5']); _gaq.push(['_trackPageview']); (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();</script>
   </head>
   <body>
     <h1>Yet Another Broadcast Console</h1>
     <p>YABC is a GTK application which assists in streaming to an icecast server.  It lets you read and edit the shownotes, play songs and jingles, mute the microphone and that's it.  No cross-fading or other DJ stuff.  Very simple and takes no resources.</p>
-    <img src="yabc.png" alt="screenshot"/>
+    <p><a href="https://github.com/umonkey/yabc">Grab the source code</a> (GitHub)</p>
+    <img class="screenshot" src="yabc.png" alt="screenshot"/>
+    <p><a target='_blank' title='Flattr this page' href='https://flattr.com/submit/auto?user_id=umonkey&amp;url=http://umonkey.github.com/yabc/&amp;title=Yet%20Another%20Broadcast%20Console&amp;description=&amp;language=en_US&amp;tags=software,python,audio,broadcasting,linux&amp;category=software'><img src='http://api.flattr.com/button/flattr-badge-large.png' alt='Flattr this page'/></a></p>
 
     <h2>Why need another console?</h2>
     <p>There are <a href="http://idjc.sourceforge.net/">IDJC</a> and <a href="http://streambox.org/elc/software/muse.htm">MuSE</a> already, but they need many resources.  For example, on an Asus EEE PC 1005 netbook IDJC takes about 50% of CPU time; if you need to have a Skype conference with two people, you're out of resources, the sound starts clicking.  YABC takes zero resources, only simplifies things.</p>
@@ -15,5 +20,9 @@
     <h2>How does it work?</h2>
     <p>YABC does not deal with the sound and does not stream on its own.  It uses <a href="http://www.mplayerhq.hu/">mplayer</a> to play audio files in the background and <a href="http://code.google.com/p/darkice/">darkice</a> to send the stream to the server.  You will also need <a href="http://www.jackaudio.org/">JACK</a> to properly connect parts of the stream.</p>
     <p>When you mute or unmute, a script is executed which modifies JACK connections.  When you connect or disconnect, a script is executed which starts or kills <code>darkice</code>.  That's it.  The UNIX way.</p>
+    <p>You can use hotkeys to play music and jingles, stop it, mute, connect etc.</p>
+
+    <hr/>
+    <p>Written by <a rel="author" href="http://umonkey.net/">Justin Forest</a>.  License: GPL v2.</p>
   </body>
 </html>
