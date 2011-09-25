@@ -375,8 +375,8 @@ class MainWindow:
 
     def on_quit(self, widget, event, data=None):
         """Ends the main GTK event loop."""
-        if self.player_music:
-            self.player_music.kill()
+        self.stop_player()
+        self.stop_streaming()
         self.notes.save()
         gtk.main_quit()
         return False
