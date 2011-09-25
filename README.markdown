@@ -17,6 +17,9 @@ How it works:
 - Show notes are in `~/.config/yabc/notes.txt`.  Changes are saved when the
   program exits.
 
+Example scripts can be found [in the source code repository][4].
+
 [1]: http://www.mplayerhq.hu/
 [2]: http://code.google.com/p/darkice/
 [3]: http://www.jackaudio.org/
+[4]: https://github.com/umonkey/yabc/tree/master/examples/commands
