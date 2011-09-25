@@ -31,8 +31,9 @@ class Toolbar(gtk.HBox):
         self.pack_start(self.ctl_duration, expand=False)
 
         self.ctl_mute = gtk.ToggleButton("Mute")
-        self.ctl_mute.set_tooltip_text("Disables sending your voice to the server.")
+        self.ctl_mute.set_tooltip_text("Disables sending your voice to the server (Ctrl+M).")
         self.ctl_mute.connect("clicked", self.on_mute)
+        self.ctl_mute.add_accelerator("clicked", self.main.accel_group, ord("m"), gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
         self.pack_start(self.ctl_mute, expand=False)
 
         self.ctl_stop = gtk.Button("Stop", stock=gtk.STOCK_STOP)
