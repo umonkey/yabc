@@ -259,15 +259,14 @@ class MainWindow:
         """Starts playing an audio file which corresponds to the specified
         widget.  If mode is "music", playing another such file will stop the
         previous one.  Other types are uncontrollable."""
+        filename = widget.get_tooltip_text()
+        print "Playing %s %s" % (mode, filename)
+
         prop = "player_jingle"
         if mode == "music":
             prop = "player_music"
             self.stop_player()
-
-        filename = widget.get_tooltip_text()
-        print "Playing %s %s" % (mode, filename)
-
-        self.toolbar.set_song_title(os.path.basename(filename))
+            self.toolbar.set_song_title(os.path.basename(filename))
 
         child = subprocess.Popen(["mplayer", filename], stdout=subprocess.PIPE)
         setattr(self, prop, child)
