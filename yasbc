@@ -25,7 +25,8 @@ class Toolbar(gtk.HBox):
         img.set_from_stock(gtk.STOCK_CONNECT, gtk.ICON_SIZE_BUTTON)
         self.ctl_connected = gtk.ToggleButton("Online")
         self.ctl_connected.set_image(img)
-        self.ctl_connected.set_tooltip_text("Starts darkice, you go online.")
+        self.ctl_connected.set_tooltip_text("Starts darkice, you go online (Ctrl+O).")
+        self.ctl_connected.add_accelerator("clicked", self.main.accel_group, ord("o"), gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
         self.pack_start(self.ctl_connected, expand=False)
 
         self.ctl_duration = gtk.Label("00:13")
@@ -154,9 +155,15 @@ class MainMenu(gtk.MenuBar):
 
 class PlayerButton(gtk.Button):
     """A button which, when clicked, plays an audio file."""
-    def __init__(self, filename, callback):
+    def __init__(self, filename, callback, image=None):
         caption = os.path.splitext(os.path.basename(filename))[0].replace("_", "__")
         gtk.Button.__init__(self, caption)
+
+        if image is not None:
+            img = gtk.Image()
+            img.set_from_stock(image, gtk.ICON_SIZE_BUTTON)
+            self.set_image(img)
+
         self.set_tooltip_text(filename)
         self.set_can_focus(False)
         self.connect("clicked", callback)
@@ -240,7 +247,7 @@ class MainWindow:
         """Sets up the music playlist."""
         files = gtk.VBox(False, spacing=0)
         for filename in self.get_audio_files("~/.config/yasbc/music"):
-            files.pack_start(PlayerButton(filename, self.on_music), expand=False, fill=True)
+            files.pack_start(PlayerButton(filename, self.on_music, image=gtk.STOCK_MEDIA_PLAY), expand=False, fill=True)
         return files
 
     def get_audio_files(self, folder):
