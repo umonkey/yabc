@@ -37,6 +37,7 @@ class Toolbar(gtk.HBox):
 
         self.ctl_stop = gtk.Button("Stop", stock=gtk.STOCK_STOP)
         self.ctl_stop.set_tooltip_text("Stops the audio file you're playing.")
+        self.ctl_stop.connect("clicked", self.on_stop)
         self.pack_start(self.ctl_stop, expand=False)
 
         self.ctl_progress = gtk.ProgressBar()
@@ -61,6 +62,9 @@ class Toolbar(gtk.HBox):
 
         print "Executing %s" % filename
         subprocess.Popen([filename], stdout=subprocess.PIPE)
+
+    def on_stop(self, widget):
+        self.main.stop_player()
 
 
 class NotesView(gtk.ScrolledWindow):
@@ -216,16 +220,19 @@ class MainWindow:
         prop = "player_jingle"
         if mode == "music":
             prop = "player_music"
-            if self.player_music:
-                print "Killing previous player."
-                self.player_music.kill()
-                self.player_music = None
+            self.stop_player()
 
         filename = widget.get_tooltip_text()
         print "Playing %s %s" % (mode, filename)
 
         child = subprocess.Popen(["mplayer", filename], stdout=subprocess.PIPE)
         setattr(self, prop, child)
+
+    def stop_player(self):
+        if self.player_music:
+            print "Killing previous player."
+            self.player_music.kill()
+            self.player_music = None
 
     def on_quit(self, widget, event, data=None):
         """Ends the main GTK event loop."""
