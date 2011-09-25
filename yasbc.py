@@ -3,6 +3,7 @@
 
 import glob
 import os
+import subprocess
 
 import gobject
 import gtk
@@ -184,11 +185,9 @@ class MainWindow:
         The name of the file is in the tooltip.  It must be the base name, the
         folder where the jingles are located is specified in the config
         file."""
-        print "on_jingle: %s" % widget.get_tooltip_text()
-
-    def play_file(self, filename):
-        """Starts playing a file."""
-        print "Playing: %s" % filename
+        filename = widget.get_tooltip_text()
+        print "on_jingle: %s" % filename
+        subprocess.Popen(["mplayer", filename], stdout=subprocess.PIPE)
 
     def on_quit(self, widget, event, data=None):
         """Ends the main GTK event loop."""
