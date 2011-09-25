@@ -93,6 +93,9 @@ class MainMenu(gtk.MenuBar):
 
 class MainWindow:
     def __init__(self):
+        self.player_jingle = None
+        self.player_music = None
+
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.set_title("Simple Broadcasting Console")
         self.window.connect("delete_event", self.on_quit)
@@ -147,7 +150,7 @@ class MainWindow:
             tmp = files[:3]
             hbox = gtk.HBox(False, spacing=0)
             for text in tmp:
-                hbox.pack_start(self.get_audio_button(text), expand=True, fill=True)
+                hbox.pack_start(self.get_audio_button(text, self.on_jingle), expand=True, fill=True)
             del files[:3]
             jingles.pack_start(hbox, expand=False, fill=True)
 
@@ -157,14 +160,14 @@ class MainWindow:
         """Sets up the music playlist."""
         files = gtk.VBox(False, spacing=0)
         for filename in self.get_audio_files("~/.config/yasbc/music"):
-            files.pack_start(self.get_audio_button(filename), expand=False, fill=True)
+            files.pack_start(self.get_audio_button(filename, self.on_music), expand=False, fill=True)
         return files
 
-    def get_audio_button(self, filename):
+    def get_audio_button(self, filename, handler):
         ctl = gtk.Button(os.path.splitext(os.path.basename(filename))[0].replace("_", "__"))
         ctl.set_tooltip_text(filename)
         ctl.set_can_focus(False)
-        ctl.connect("clicked", self.on_jingle)
+        ctl.connect("clicked", handler)
         return ctl
 
     def get_audio_files(self, folder):
@@ -180,17 +183,33 @@ class MainWindow:
         return names
 
     def on_jingle(self, widget):
-        """Plays a jingle when the corresponding button is clicked.
+        return self.on_audio(widget, "jingle")
 
-        The name of the file is in the tooltip.  It must be the base name, the
-        folder where the jingles are located is specified in the config
-        file."""
+    def on_music(self, widget):
+        return self.on_audio(widget, "music")
+
+    def on_audio(self, widget, mode):
+        """Starts playing an audio file which corresponds to the specified
+        widget.  If mode is "music", playing another such file will stop the
+        previous one.  Other types are uncontrollable."""
+        prop = "player_jingle"
+        if mode == "music":
+            prop = "player_music"
+            if self.player_music:
+                print "Killing previous player."
+                self.player_music.kill()
+                self.player_music = None
+
         filename = widget.get_tooltip_text()
-        print "on_jingle: %s" % filename
-        subprocess.Popen(["mplayer", filename], stdout=subprocess.PIPE)
+        print "Playing %s %s" % (mode, filename)
+
+        child = subprocess.Popen(["mplayer", filename], stdout=subprocess.PIPE)
+        setattr(self, prop, child)
 
     def on_quit(self, widget, event, data=None):
         """Ends the main GTK event loop."""
+        if self.player_music:
+            self.player_music.kill()
         gtk.main_quit()
         return False
 
