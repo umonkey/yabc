@@ -14,6 +14,8 @@ How it works:
   offline, `~/.config/yabc/commands/disconnect` is executed.
 - When you press the mute button, `~/.config/yabc/commands/mute` is executed;
   when you unpress it, `~/.config/yabc/commands/unmute` is executed.
+- Show notes are in `~/.config/yabc/notes.txt`.  Changes are saved when the
+  program exits.
 
 [1]: http://www.mplayerhq.hu/
 [2]: http://code.google.com/p/darkice/
