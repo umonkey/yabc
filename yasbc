@@ -21,7 +21,10 @@ class Toolbar(gtk.HBox):
 
         # Stock images: http://www.pygtk.org/pygtk2tutorial/ch-ButtonWidget.html
 
+        img = gtk.Image()
+        img.set_from_stock(gtk.STOCK_CONNECT, gtk.ICON_SIZE_BUTTON)
         self.ctl_connected = gtk.ToggleButton("Online")
+        self.ctl_connected.set_image(img)
         self.ctl_connected.set_tooltip_text("Starts darkice, you go online.")
         self.pack_start(self.ctl_connected, expand=False)
 
