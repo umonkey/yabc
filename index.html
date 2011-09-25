@@ -1,1 +1,19 @@
-My GitHub Page
+<html>
+  <head>
+    <title>Yet Another Broadcast Console</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <style type="text/css">img { border: none }</style>
+  </head>
+  <body>
+    <h1>Yet Another Broadcast Console</h1>
+    <p>YABC is a GTK application which assists in streaming to an icecast server.  It lets you read and edit the shownotes, play songs and jingles, mute the microphone and that's it.  No cross-fading or other DJ stuff.  Very simple and takes no resources.</p>
+    <img src="yabc.png" alt="screenshot"/>
+
+    <h2>Why need another console?</h2>
+    <p>There are <a href="http://idjc.sourceforge.net/">IDJC</a> and <a href="http://streambox.org/elc/software/muse.htm">MuSE</a> already, but they need many resources.  For example, on an Asus EEE PC 1005 netbook IDJC takes about 50% of CPU time; if you need to have a Skype conference with two people, you're out of resources, the sound starts clicking.  YABC takes zero resources, only simplifies things.</p>
+
+    <h2>How does it work?</h2>
+    <p>YABC does not deal with the sound and does not stream on its own.  It uses <a href="http://www.mplayerhq.hu/">mplayer</a> to play audio files in the background and <a href="http://code.google.com/p/darkice/">darkice</a> to send the stream to the server.  You will also need <a href="http://www.jackaudio.org/">JACK</a> to properly connect parts of the stream.</p>
+    <p>When you mute or unmute, a script is executed which modifies JACK connections.  When you connect or disconnect, a script is executed which starts or kills <code>darkice</code>.  That's it.  The UNIX way.</p>
+  </body>
+</html>
