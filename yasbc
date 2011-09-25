@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 # vim: set tw=0 fileencoding=utf-8:
 
+"""Yet Another Simple Broadcast Console
+
+This is a simple GTK based console for radio broadcasting.  It uses external
+programs to actually play the audio, stream it and do other things (The UNIX
+Way).
+"""
+
 import glob
 import os
 import subprocess
@@ -11,7 +18,15 @@ import gtk
 import pango
 import pygtk
 
-# ~/src/tmradio-client-gtk/simple.py
+
+__author__ = "Justin Forest"
+__copyright__ = "Copyright 2011, Justin Forest"
+__credits__ = ["Justin Forest"]
+__license__ = "Public Domain"
+__version__ = "11.09.25"
+__maintainer__ = "Justin Forest"
+__email__ = "hex@umonkey.net"
+__status__ = "Alpha"
 
 
 class Toolbar(gtk.HBox):
