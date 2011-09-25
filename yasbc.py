@@ -128,7 +128,7 @@ class MainWindow:
         return files
 
     def get_audio_button(self, filename):
-        ctl = gtk.Button(os.path.splitext(os.path.basename(filename))[0])
+        ctl = gtk.Button(os.path.splitext(os.path.basename(filename))[0].replace("_", "__"))
         ctl.set_tooltip_text(filename)
         ctl.set_can_focus(False)
         ctl.connect("clicked", self.on_jingle)
