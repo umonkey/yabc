@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Disconnect from the server when the script is terminated.
+trap "pkill -u $USER darkice" INT
+
+# Start the port connections maintainer if available.
+if [ -n "$(which jack.plumbing)" -a -z "$(pgrep -u $USER jack.plumbing)" ]; then
+    echo "Starting jack.plumbing"
+    jack.plumbing >/dev/null 2>&1 &
+fi
+
+if [ -z "$(which darkice)" ]; then
+    echo "Please install darkice." >&2
+    exit 1
+fi
+
+if [ ! -f ~/.config/yabc/darkice.cfg ]; then
+    echo "You don't have ~/.config/yabc/darkice.cfg" >&2
+    exit 1
+fi
+
+darkice -v 10 -c ~/.config/yabc/darkice.cfg

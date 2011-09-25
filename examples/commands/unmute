@@ -1,0 +1,9 @@
+#!/bin/sh
+jack_connect "system:capture_1" "darkice:left"
+jack_connect "system:capture_1" "darkice:right"
+jack_connect "PulseAudio JACK Sink:front-left" "darkice:left"
+jack_connect "PulseAudio JACK Sink:front-right" "darkice:right"
+
+if [ -z "$(pgrep -u $USER jack.plumbing)" ]; then
+    jack.plumbing >/dev/null 2>&1 &
+fi

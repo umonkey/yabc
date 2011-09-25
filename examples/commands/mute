@@ -1,0 +1,9 @@
+#!/bin/sh
+pkill -u $USER jack.plumbing
+echo "Disconnecting system capture from darkice"
+jack_disconnect "system:capture_1" "darkice:right"
+jack_disconnect "system:capture_1" "darkice:left"
+
+echo "Disconnecting PulseAudio from darkice"
+jack_disconnect "PulseAudio JACK Sink:front-left" "darkice:left"
+jack_disconnect "PulseAudio JACK Sink:front-right" "darkice:right"
