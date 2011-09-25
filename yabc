@@ -230,6 +230,7 @@ class MainWindow:
         self.vbox.pack_start(main, expand=True, fill=True)
 
         self.window.set_default_size(800, 380)
+        gobject.idle_add(self.on_idle)
 
     def setup_menu(self):
         self.menu_bar = MainMenu(self)
@@ -326,6 +327,15 @@ class MainWindow:
 
         child = subprocess.Popen(["mplayer", filename], stdout=subprocess.PIPE)
         setattr(self, prop, child)
+
+    def on_idle(self, *args):
+        if self.proc_stream:
+            status = self.proc_stream.poll()
+            if status is not None:
+                print "Streaming stopped, status: %s." % status
+                self.proc_stream = None
+                self.toolbar.ctl_connected.set_active(False)
+        return True
 
     def stop_player(self):
         if self.player_music:
