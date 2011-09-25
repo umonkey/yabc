@@ -53,6 +53,7 @@ class NotesView(gtk.ScrolledWindow):
 
     def setup_view(self):
         view = gtk.TextView()
+        view.set_wrap_mode(gtk.WRAP_WORD)
         view.modify_font(pango.FontDescription("monospace"))
 
         filename = self.get_filename()
